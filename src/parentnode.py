@@ -1,5 +1,5 @@
-from htmlnode import HTMLNode
-from leafnode import LeafNode
+from src.htmlnode import HTMLNode
+from src.leafnode import LeafNode
 
 class ParentNode(HTMLNode):
     def __init__(self, tag=None, children=None, props: dict = None) -> None:
