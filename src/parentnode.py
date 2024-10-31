@@ -1,9 +1,10 @@
 from htmlnode import HTMLNode
+from leafnode import LeafNode
 
 class ParentNode(HTMLNode):
     def __init__(self, tag=None, children=None, props: dict = None) -> None:
         if not children:
-            raise ValueError('No children Present')
+            raise ValueError('Invalid HTML: No children')
         super().__init__(tag,None, children, props)
 
     def to_html(self):
