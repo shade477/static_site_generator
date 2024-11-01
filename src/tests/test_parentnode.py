@@ -31,7 +31,7 @@ class TestParentNode(unittest.TestCase):
 
     def test_repr(self):
         node = ParentNode('div', [LeafNode('i', 'Italic Text')]) 
-        self.assertEqual(node.__repr__(), 'ParentNode(div, None, [HTMLNode(i, Italic Text, children: None, None)], None)')
+        self.assertEqual(node.__repr__(), 'ParentNode(div, None, [LeafNode(i, Italic Text, None)], None)')
 
     def test_no_children(self):
         with self.assertRaises(ValueError) as context:
