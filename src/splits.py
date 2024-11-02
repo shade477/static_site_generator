@@ -1,4 +1,4 @@
-from textnode import TextNode
+from src.textnode import TextNode
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
@@ -10,11 +10,9 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         while l < len(text):
             opening = text.find(delimiter, l)
             if opening == -1:
-
-                # no more delimiters are found
-                if text[l:]:
-                    new_nodes.append(TextNode(text[l:], node.text_type))
-                    break
+                # no more delimiters are found   
+                new_nodes.append(TextNode(text[l:], node.text_type))
+                break
 
             closing = text.find(delimiter, opening + len(delimiter))
             if closing == -1:
@@ -22,7 +20,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 raise Exception(f"Invalid Markdown: Missing ending '{delimiter}'")
                 
             # text to add between l and opening?
-            new_nodes.append(TextNode(text[l:opening], node.text_type))
+            if text[l:opening]:
+                new_nodes.append(TextNode(text[l:opening], node.text_type))
             # text to add between opening and closing
             new_nodes.append(TextNode(text[opening + len(delimiter):closing], text_type))
             
