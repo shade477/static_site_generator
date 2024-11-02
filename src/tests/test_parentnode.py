@@ -45,9 +45,9 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             ParentNode(children={ 'href':'google.com' }).to_html()
 
-        print(f'Expected result: Invalid HTML: No tag')
-        print(f'Actual result: {str(context.exception)}')
+        # print(f'Expected result: Invalid HTML: No tag')
+        # print(f'Actual result: {str(context.exception)}')
 
-        self.assertTrue('Invalid HTML: No tag')
+        self.assertTrue('Invalid HTML: No tag' in str(context.exception))
 
 

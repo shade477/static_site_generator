@@ -37,3 +37,10 @@ class TestSplitNodes(unittest.TestCase):
         
         node_arr = split_nodes_delimiter(node, '*', TextType.ITALIC)
         self.assertEqual(node_arr, expected_arr)
+
+    def test_error(self):
+        node = [TextNode('Using invalid *texttype', TextType.TEXT)]
+        with self.assertRaises(Exception) as context:
+            split_nodes_delimiter(node, '*', TextType.ITALIC)
+        
+        self.assertTrue("Invalid Markdown: Missing ending '*'" in str(context.exception))
