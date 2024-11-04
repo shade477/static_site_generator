@@ -24,7 +24,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 l = opening + len(delimiter)
                 continue
             
-            closing = text.find(delimiter, opening)
+            closing = text.find(delimiter, opening+len(delimiter))
 
             if closing == -1 or (closing < len(text)-len(delimiter) and text[closing+len(delimiter)] == text[closing]):
                 raise Exception('Invalid Markdown: Missing ending delimiter')
