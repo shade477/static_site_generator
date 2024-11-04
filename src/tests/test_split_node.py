@@ -49,10 +49,11 @@ class TestSplitNodes(unittest.TestCase):
         expected = [
             TextNode('Hello I am', TextType.TEXT),
             TextNode('Nothing', TextType.ITALIC),
-            TextNode(' but a **Simple MAN**', TextType.TEXT)
+            TextNode(' but a ', TextType.TEXT),
+            TextNode('Simple MAN', TextType.BOLD)
         ]
-        
-        result = split_nodes_delimiter(nodes, '*', TextType.ITALIC)
+        nodes2 = split_nodes_delimiter(nodes, '**', TextType.BOLD)
+        result = split_nodes_delimiter(nodes2, '*', TextType.ITALIC)
         self.assertListEqual(result, expected)
 
     def test_multiple_nodes_bold(self):
@@ -110,19 +111,19 @@ class TestSplitNodes(unittest.TestCase):
         result = split_nodes_delimiter(node, "**", TextType.BOLD)
         self.assertListEqual(result, expected_arr)
 
-    def test_multiple_nodes_italic_bold(self):
-        # Test processing of italic delimiters
-        nodes = [
-            TextNode('Hello I am', TextType.TEXT),
-            TextNode('*Nothing* but a **Simple MAN**', TextType.TEXT)
-        ]
+    # def test_multiple_nodes_italic_bold(self):
+    #     # Test processing of italic delimiters
+    #     nodes = [
+    #         TextNode('Hello I am', TextType.TEXT),
+    #         TextNode('*Nothing* but a **Simple MAN**', TextType.TEXT)
+    #     ]
         
-        nodes2 = split_nodes_delimiter(nodes, "**", TextType.BOLD)
-        result = split_nodes_delimiter(nodes2, '*', TextType.ITALIC)
-        print('---------------------------------------------------')
-        print('Results')
-        print('------------------------------------------------------------------')
-        print(result)
-        print('------------------------------------------------------------------')
+    #     nodes2 = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    #     result = split_nodes_delimiter(nodes2, '*', TextType.ITALIC)
+    #     print('---------------------------------------------------')
+    #     print('Results')
+    #     print('------------------------------------------------------------------')
+    #     print(result)
+    #     print('------------------------------------------------------------------')
 
-        #self.assertListEqual(result, expected)
+    #     #self.assertListEqual(result, expected)
