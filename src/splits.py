@@ -22,6 +22,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
             if opening <= len(text) - (2 * len(delimiter)) and text[opening:opening+len(delimiter)] == text[opening+len(delimiter):opening+(2*len(delimiter))]:
                 l = opening + len(delimiter)
+                l = text.find(delimiter, l) + len(delimiter)
                 continue
             
             closing = text.find(delimiter, opening+len(delimiter))
