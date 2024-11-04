@@ -37,8 +37,8 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             ParentNode('p').to_html()
 
-        print(f'Expected result: Invalid HTML: No children')
-        print(f'Actual result: {str(context.exception)}')
+        # print(f'Expected result: Invalid HTML: No children')
+        # print(f'Actual result: {str(context.exception)}')
         self.assertTrue('Invalid HTML: No children' in str(context.exception))
 
     def test_no_tag(self):
