@@ -1,5 +1,5 @@
 import unittest
-from src.splits import split_nodes_delimiter
+from src.inline_markdown import split_nodes_delimiter
 from src.textnode import TextNode, TextType
 
 class TestSplitNodes(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestSplitNodes(unittest.TestCase):
         expected_arr = [TextNode('This is plain text without delimiters', TextType.TEXT)]
 
         node_arr = split_nodes_delimiter(node, '*', TextType.ITALIC)
-        self.assertEqual(expected_arr, node_arr)
+        self.assertListEqual(expected_arr, node_arr)
 
     def test_plain2(self):
         node = [TextNode('This is a plain text with **bold and nice** delimiters', TextType.TEXT)]
@@ -17,7 +17,7 @@ class TestSplitNodes(unittest.TestCase):
                         TextNode(' delimiters', TextType.TEXT)]
 
         node_arr = split_nodes_delimiter(node, '**', TextType.BOLD)
-        self.assertEqual(node_arr, expected_arr)
+        self.assertListEqual(node_arr, expected_arr)
 
     def test_pre_plain(self):
         node = [TextNode('**Starts with BOLD** followed by normal and **then by bold**', TextType.TEXT)]
@@ -26,7 +26,7 @@ class TestSplitNodes(unittest.TestCase):
                         TextNode('then by bold', TextType.BOLD)]
         
         node_arr = split_nodes_delimiter(node, '**', TextType.BOLD)
-        self.assertEqual(node_arr, expected_arr)
+        self.assertListEqual(node_arr, expected_arr)
 
     def test_multiple(self):
         node = [TextNode('Hello I am', TextType.TEXT),
@@ -36,11 +36,11 @@ class TestSplitNodes(unittest.TestCase):
                         TextNode(' but a **Simple MAN**', TextType.TEXT)]
         
         node_arr = split_nodes_delimiter(node, '*', TextType.ITALIC)
-        self.assertEqual(node_arr, expected_arr)
+        self.assertListEqual(node_arr, expected_arr)
 
     def test_error(self):
         node = [TextNode('Using invalid *texttype', TextType.TEXT)]
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(ValueError) as context:
             split_nodes_delimiter(node, '*', TextType.ITALIC)
         
-        self.assertTrue("Invalid Markdown: Missing ending '*'" in str(context.exception))
+        self.assertTrue("Invalid markdown, formatted section not closed" in str(context.exception))
