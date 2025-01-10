@@ -109,3 +109,20 @@ class TestSplitNodes(unittest.TestCase):
         ]
         result = split_nodes_delimiter(node, "**", TextType.BOLD)
         self.assertListEqual(result, expected_arr)
+
+    def test_multiple_nodes_italic_bold(self):
+        # Test processing of italic delimiters
+        nodes = [
+            TextNode('Hello I am', TextType.TEXT),
+            TextNode('*Nothing* but a **Simple MAN**', TextType.TEXT)
+        ]
+        
+        nodes2 = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+        result = split_nodes_delimiter(nodes2, '*', TextType.ITALIC)
+        print('---------------------------------------------------')
+        print('Results')
+        print('------------------------------------------------------------------')
+        print(result)
+        print('------------------------------------------------------------------')
+
+        #self.assertListEqual(result, expected)
