@@ -104,3 +104,61 @@ def extract_markdown_images(text):
         l = r
 
     return links
+
+def extract_markdown_links(text):
+    """
+    Extract Alternate Text and links to pack them in a tuple and return in a list
+
+    @params:
+    - text: String -> Text from which links to be extracted
+    
+    return: List[tuple(alt_text: str, link:str)]
+    """
+    # Starting the pointer from the begining of the text
+    l = 0
+    # Empty list to store the results and return
+    links = []
+    # Looping while the pointer is less than len(text)
+    while(l < len(text)):
+        # Looking for starting index of alt text starting from l
+        l = text.find('[', l)
+
+        # If starting index is not found i.e. no links in the text, returning the results
+        if l == -1:
+            return links
+
+        # looking for alt_text ending delimiter starting index of l+2
+        r = text.find(']', l+2)
+
+        # if ending delimiter is not found then exception raised
+        if r == -1:
+            raise Exception('Alt text not closed')
+
+        # Extracting alt text
+        alt = text[l+2: r]
+
+        # Looking for starting delimiter of img_src starting index of l+2
+        l = text.find('](', l+2)
+
+        # If img_src starting index not found error raised
+        if l == -1:
+            raise Exception('No Link')
+
+        # Looking for link ending index
+        r = text.find(')', l+1)
+
+        # If ending delimiter not found then exception raised
+        if r == -1:
+            raise Exception('Link not enclosed properly')
+
+        # Updating left splicing position
+        l = l+2
+
+        # Extracting img_src
+        src = text[l:r]
+
+        # Packing and appending results
+        links.append((alt, src))
+        l = r
+
+    return links 
