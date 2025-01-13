@@ -12,18 +12,31 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     @return: List[TextNodes] -> List of TextNodes split with the delimiter and tagged with the text_type
 
     """ 
+
+    # Create Empty list to store all new nodes
     new_nodes = []
+
+    # Run through all the nodes in old nodes
     for old_node in old_nodes:
+        # If old_node.text_type is not TextType.TEXT then it is already processed and thus ignored and appended
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
             continue
+
+        # Create empty list to store the split nodes
         split_nodes = []
+        # Splitting the old_node.text using delimiter
         sections = old_node.text.split(delimiter)
+        # if the length of sections is not even then the text is not enclosed properly
         if len(sections) % 2 == 0:
             raise ValueError("Invalid markdown, formatted section not closed")
+        
+        # Running through all the sections
         for i in range(len(sections)):
+            # If its an empty string then it is ignored
             if sections[i] == "":
                 continue
+            # If the index of the section is even then it is an unenclosed text else it is an enclosed by delimiters. These are added to the return
             if i % 2 == 0:
                 split_nodes.append(TextNode(sections[i], TextType.TEXT))
             else:
@@ -43,8 +56,51 @@ def extract_markdown_images(text):
     return: List[tuple(alt_text: str, link:str)]
     """
 
-    start = text.find('!')
-    if start == -1:
-        return [()]
+    # Starting the pointer from the begining of the text
+    l = 0
+    # Empty list to store the results and return
+    links = []
+    # Looping while the pointer is less than len(text)
+    while(l < len(text)):
+        # Looking for starting index of alt text starting from l
+        l = text.find('![', l)
 
-    
+        # If starting index is not found i.e. no links in the text, returning the results
+        if l == -1:
+            return links
+
+        # looking for alt_text ending delimiter starting index of l+2
+        r = text.find(']', l+2)
+
+        # if ending delimiter is not found then exception raised
+        if r == -1:
+            raise Exception('Alt text not closed')
+
+        # Extracting alt text
+        alt = text[l+2: r]
+
+        # Looking for starting delimiter of img_src starting index of l+2
+        l = text.find('](', l+2)
+
+        # If img_src starting index not found error raised
+        if l == -1:
+            raise Exception('No Link')
+
+        # Looking for link ending index
+        r = text.find(')', l+1)
+
+        # If ending delimiter not found then exception raised
+        if r == -1:
+            raise Exception('Link not enclosed properly')
+
+        # Updating left splicing position
+        l = l+2
+
+        # Extracting img_src
+        img_src = text[l:r]
+
+        # Packing and appending results
+        links.append((alt, img_src))
+        l = r
+
+    return links
