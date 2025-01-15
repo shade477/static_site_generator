@@ -71,3 +71,72 @@ def split_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
     return matches
+
+def split_nodes_images(old_nodes):
+    """
+    Accepts a list of TextNodes and classifies them if image links are present
+    @param:
+    - old_nodes: List[TextNode]: List of Textnodes that need to be split
+
+    @return: List[TextNode]: List of textnodes after classifying image links
+    """
+
+    new_nodes = []
+
+    for old_node in old_nodes:
+        text = old_node.text
+
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+
+        splits = split_markdown_images(old_node.text)
+
+        if not splits:
+            new_nodes.append(old_node)
+            continue
+
+        for split in splits:
+            parts = text.split(f'![{split[0]}]({split[1]})', 1)
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0], TextType.TEXT))
+            new_nodes.append(TextNode(split[0], TextType.IMAGE, split[1]))
+
+            text = parts[1]
+        
+    return new_nodes
+
+def split_nodes_links(old_nodes):
+    """
+    Accepts a list of TextNodes and returns a list of TextNodes after classifying them for links
+
+    @params:
+    - old_nodes: List[TextNode]: List of Textnodes that need to be split
+
+    @return: List[TextNode]: List of textnodes after classifying links
+    """
+    
+    new_nodes = []
+
+    for old_node in old_nodes:
+        text = old_node.text
+
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+
+        splits = split_markdown_links(text)
+
+        if not splits:
+            new_nodes.append(old_node)
+            continue
+
+        for split in splits:
+            parts = text.split(f'[{split[0]}]({split[1]})', 1)
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0], TextType.TEXT))
+            new_nodes.append(split[0], TextType.LINK, split[1])
+
+            text = parts[1]
+        
+    return new_nodes
