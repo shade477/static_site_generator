@@ -1,5 +1,5 @@
 import unittest
-from src.inline_markdown import split_nodes_delimiter, split_nodes_images, split_nodes_links
+from src.inline_markdown import split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 from src.textnode import TextNode, TextType
 
 class TestSplitNodes(unittest.TestCase):
@@ -120,12 +120,14 @@ class TestSplitNodes(unittest.TestCase):
             TextNode('obi wan', TextType.IMAGE, 'https://i.imgur.com/fJRm4Vk.jpeg')
         ]
 
-        result = split_nodes_images(node)
+        result = split_nodes_image(node)
 
         self.assertListEqual(result, expected_arr)
 
     def test_node_link(self):
-        node = [TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)]
+        node = [
+            TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
+        ]
         expected_arr = [
             TextNode('This is text with a link ', TextType.TEXT),
             TextNode('to boot dev', TextType.LINK, 'https://www.boot.dev'),
@@ -133,9 +135,9 @@ class TestSplitNodes(unittest.TestCase):
             TextNode('to youtube', TextType.LINK, 'https://www.youtube.com/@bootdotdev')
         ]
 
-        result = split_nodes_links(node)
+        result = split_nodes_link(node)
 
-        self.assertListEqual(node, expected_arr)
+        self.assertListEqual(result, expected_arr)
 
     def test_node_image_normal(self):
         node = [
@@ -145,7 +147,7 @@ class TestSplitNodes(unittest.TestCase):
             TextNode('This is normal text that does not contain any link', TextType.TEXT)
         ]
 
-        result = split_nodes_images(node)
+        result = split_nodes_image(node)
         self.assertListEqual(result, expected_arr)
 
     def test_node_link_normal(self):
@@ -155,5 +157,37 @@ class TestSplitNodes(unittest.TestCase):
         expected_arr = [
             TextNode('This is normal text that does not contain any link', TextType.TEXT)
         ]
-        result = split_nodes_links(node)
-        self.assertListEqual(node, result)
+        result = split_nodes_link(node)
+        self.assertListEqual(result, expected_arr)
+
+    def test_node_link_postfix(self):
+        node = [
+            TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev) with ending text", TextType.TEXT)
+        ]
+        expected_arr = [
+            TextNode('This is text with a link ', TextType.TEXT),
+            TextNode('to boot dev', TextType.LINK, 'https://www.boot.dev'),
+            TextNode(' and ', TextType.TEXT),
+            TextNode('to youtube', TextType.LINK, 'https://www.youtube.com/@bootdotdev'),
+            TextNode(' with ending text', TextType.TEXT)
+        ]
+        result = split_nodes_link(node)
+        self.assertListEqual(result, expected_arr)
+
+    def test_text_to_node_normal(self):
+        text = 'This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+        expected_arr = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+
+        result = text_to_textnodes(text)
+        self.assertListEqual(result, expected_arr)

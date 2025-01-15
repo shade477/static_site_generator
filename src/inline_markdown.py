@@ -46,7 +46,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         new_nodes.extend(split_nodes)
     return new_nodes
 
-def split_markdown_images(text):
+def extract_markdown_images(text):
     """
     Extract Alternate Text and links to markdown images and pack them in a tuple and return in a list
 
@@ -59,7 +59,7 @@ def split_markdown_images(text):
     matches = re.findall(pattern, text)
     return matches
 
-def split_markdown_links(text):
+def extract_markdown_links(text):
     """
     Extract Alternate Text and links to pack them in a tuple and return in a list
 
@@ -72,7 +72,7 @@ def split_markdown_links(text):
     matches = re.findall(pattern, text)
     return matches
 
-def split_nodes_images(old_nodes):
+def split_nodes_image(old_nodes):
     """
     Accepts a list of TextNodes and classifies them if image links are present
     @param:
@@ -90,7 +90,7 @@ def split_nodes_images(old_nodes):
             new_nodes.append(old_node)
             continue
 
-        splits = split_markdown_images(old_node.text)
+        splits = extract_markdown_images(old_node.text)
 
         if not splits:
             new_nodes.append(old_node)
@@ -103,10 +103,13 @@ def split_nodes_images(old_nodes):
             new_nodes.append(TextNode(split[0], TextType.IMAGE, split[1]))
 
             text = parts[1]
+        text = text.split(f'![{split[0]}]({split[1]})', 1)
+        if text[0]:
+            new_nodes.append(TextNode(text[0], TextType.TEXT))
         
     return new_nodes
 
-def split_nodes_links(old_nodes):
+def split_nodes_link(old_nodes):
     """
     Accepts a list of TextNodes and returns a list of TextNodes after classifying them for links
 
@@ -125,7 +128,7 @@ def split_nodes_links(old_nodes):
             new_nodes.append(old_node)
             continue
 
-        splits = split_markdown_links(text)
+        splits = extract_markdown_links(text)
 
         if not splits:
             new_nodes.append(old_node)
@@ -135,8 +138,30 @@ def split_nodes_links(old_nodes):
             parts = text.split(f'[{split[0]}]({split[1]})', 1)
             if parts[0]:
                 new_nodes.append(TextNode(parts[0], TextType.TEXT))
-            new_nodes.append(split[0], TextType.LINK, split[1])
+            new_nodes.append(TextNode(split[0], TextType.LINK, split[1]))
 
             text = parts[1]
-        
+        text = text.split(f'[{split[0]}]({split[1]})', 1)
+        if text[0]:
+            new_nodes.append(TextNode(text[0], TextType.TEXT))
+
     return new_nodes
+
+def text_to_textnodes(text):
+    # Define transformations as a list of handler functions
+    transformations = [
+        lambda nodes: split_nodes_delimiter(nodes, '**', TextType.BOLD),
+        lambda nodes: split_nodes_delimiter(nodes, '*', TextType.ITALIC),
+        lambda nodes: split_nodes_delimiter(nodes, '`', TextType.CODE),
+        split_nodes_link,  # For links
+        split_nodes_image  # For images
+    ]
+    
+    # Initialize nodes with plain text
+    nodes = [TextNode(text, TextType.TEXT)]
+    
+    # Apply each transformation in sequence
+    for transform in transformations:
+        nodes = transform(nodes)
+    
+    return nodes
