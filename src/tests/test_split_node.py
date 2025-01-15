@@ -1,5 +1,5 @@
 import unittest
-from src.inline_markdown import split_nodes_delimiter
+from src.inline_markdown import split_nodes_delimiter, split_nodes_images, split_nodes_links
 from src.textnode import TextNode, TextType
 
 class TestSplitNodes(unittest.TestCase):
@@ -111,19 +111,49 @@ class TestSplitNodes(unittest.TestCase):
         result = split_nodes_delimiter(node, "**", TextType.BOLD)
         self.assertListEqual(result, expected_arr)
 
-    # def test_multiple_nodes_italic_bold(self):
-    #     # Test processing of italic delimiters
-    #     nodes = [
-    #         TextNode('Hello I am', TextType.TEXT),
-    #         TextNode('*Nothing* but a **Simple MAN**', TextType.TEXT)
-    #     ]
-        
-    #     nodes2 = split_nodes_delimiter(nodes, "**", TextType.BOLD)
-    #     result = split_nodes_delimiter(nodes2, '*', TextType.ITALIC)
-    #     print('---------------------------------------------------')
-    #     print('Results')
-    #     print('------------------------------------------------------------------')
-    #     print(result)
-    #     print('------------------------------------------------------------------')
+    def test_node_image(self):
+        node = [TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT)]
+        expected_arr = [
+            TextNode('This is text with a ', TextType.TEXT),
+            TextNode('rick roll', TextType.IMAGE, 'https://i.imgur.com/aKaOqIh.gif'),
+            TextNode(' and ', TextType.TEXT),
+            TextNode('obi wan', TextType.IMAGE, 'https://i.imgur.com/fJRm4Vk.jpeg')
+        ]
 
-    #     #self.assertListEqual(result, expected)
+        result = split_nodes_images(node)
+
+        self.assertListEqual(result, expected_arr)
+
+    def test_node_link(self):
+        node = [TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)]
+        expected_arr = [
+            TextNode('This is text with a link ', TextType.TEXT),
+            TextNode('to boot dev', TextType.LINK, 'https://www.boot.dev'),
+            TextNode(' and ', TextType.TEXT),
+            TextNode('to youtube', TextType.LINK, 'https://www.youtube.com/@bootdotdev')
+        ]
+
+        result = split_nodes_links(node)
+
+        self.assertListEqual(node, expected_arr)
+
+    def test_node_image_normal(self):
+        node = [
+            TextNode('This is normal text that does not contain any link', TextType.TEXT)
+        ]
+        expected_arr = [
+            TextNode('This is normal text that does not contain any link', TextType.TEXT)
+        ]
+
+        result = split_nodes_images(node)
+        self.assertListEqual(result, expected_arr)
+
+    def test_node_link_normal(self):
+        node = [
+            TextNode('This is normal text that does not contain any link', TextType.TEXT)
+        ]
+        expected_arr = [
+            TextNode('This is normal text that does not contain any link', TextType.TEXT)
+        ]
+        result = split_nodes_links(node)
+        self.assertListEqual(node, result)
