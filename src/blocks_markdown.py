@@ -1,5 +1,5 @@
 import re
-
+from src.BlockType import BlockType
 
 def markdown_to_blocks(text):
     """
@@ -32,14 +32,15 @@ def block_to_block_type(text):
     """
 
     if text[0] == '#':
+        levels = [BlockType.HEADING1, BlockType.HEADING2, BlockType.HEADING3, BlockType.HEADING4, BlockType.HEADING5, BlockType.HEADING6]
         level = len(text.split(' ', 1)[0])
         if level > 6:
             level = 6
-        return f'h{level}'
+        return levels[level - 1] 
 
     elif text[:3] == '```':
         if text[-3:] == '```':
-            return f'code'
+            return BlockType.CODE
         raise Exception('Code block not enclosed')
 
     elif text[0] == '>':
@@ -47,7 +48,7 @@ def block_to_block_type(text):
         for part in parts:
             if part[0] != '>':
                 raise Exception('Quote line not start with ">"')
-        return 'quote'
+        return BlockType.QUOTE
 
     elif text[0] == '-' or text[0] == '*':
         ch = text[0]
@@ -55,12 +56,12 @@ def block_to_block_type(text):
         for part in parts:
             if part[0] != ch:
                 raise Exception('Unordered lines not good')
-        return 'unordered'
+        return BlockType.UNORDERED
 
     elif re.match(r'^([0-9]+)\. .*', text):
         parts = text.split('\n')
         match = re.search(r'^([0-9]+)\.', parts[0])  # Check the first line
-        
+
         if not match:
             raise Exception("Bad Block: The first line does not start with a number and a period.")
         expected = int(match.group(1))  # Extract the first number
@@ -73,7 +74,7 @@ def block_to_block_type(text):
             if number != expected:
                 raise Exception(f"Bad numbering: Expected {expected}, but got {number}.")
             expected += 1  # Increment expected for the next line
-        return 'ordered'
+        return BlockType.ORDERED
     
     else:
-        return 'paragraph'
+        return BlockType.PARAGRAPH
