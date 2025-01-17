@@ -1,5 +1,5 @@
 import unittest
-from blocks_markdown import markdown_to_blocks
+from src.blocks_markdown import markdown_to_blocks, block_to_block_type
 
 class TestBlocks(unittest.TestCase):
     def test_mark_to_block(self):
@@ -27,3 +27,113 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         result = markdown_to_blocks(text)
 
         self.assertListEqual(result, expected_arr)
+
+    def test_block_head(self):
+        text = '## Heading 2'
+        expected = 'h2'
+
+        result = block_to_block_type(text)
+
+        self.assertEqual(result, expected)
+
+    def test_block_head2(self):
+        text = '####### Heading 6'
+        expected = 'h6'
+        result = block_to_block_type(text)
+
+        self.assertEqual(result, expected)
+
+    def test_block_code(self):
+        text = """```
+        Code Block
+        hello
+        ```"""
+        expected = 'code'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+        
+    def test_block_code_err(self):
+        text = """```
+        Code Block
+        hello
+        """
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        self.assertTrue("Code block not enclosed" in str(ctx.exception))
+
+    def test_block_quote(self):
+        text = """> Hesitation is defeat
+> If the heroes run away, who's left to help?"""
+        expected = 'quote'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+        
+    def test_block_quote_err(self):
+        text = """> Hesitation is defeat
+If the heroes run away, who's left to help?"""
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        self.assertTrue('Quote line not start with ">"' in str(ctx.exception))
+
+    def test_block_unordered1(self):
+        text = """- item 1
+- item 2"""
+        expected = 'unordered'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+
+    def test_block_unordered2(self):
+        text = """* item 1
+* item 2"""
+        expected = 'unordered'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+
+    def test_block_unordered_mix(self):
+        text = """- item 1
+- item 2
+* item 3"""
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        
+        self.assertTrue('Unordered lines not good' in str(ctx.exception))
+
+    def test_block_unordered_bad(self):
+        text = """- item 1
+- item 2
+item 3"""
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        
+        self.assertTrue('Unordered lines not good' in str(ctx.exception))
+
+    def test_block_ordered(self):
+        text = """1. item 1
+2. item 2
+3. item"""
+        expected = 'ordered'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+    
+    def test_block_ordered_bad(self):
+        text = """1. item 1
+2. item 2
+item 3"""
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        self.assertTrue('Line does not start with a number and a period' in str(ctx.exception))
+
+    def test_block_ordered_numbering(self):
+        text = """1. item 1
+2. item 2
+4. item 3"""
+        with self.assertRaises(Exception) as ctx:
+            block_to_block_type(text)
+        self.assertTrue("Bad numbering" in str(ctx.exception))
+
+    def test_block_paragraph(self):
+        text = """Just a normal paragraph with multiple lines
+        lol lolol"""
+        expected= 'paragraph'
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
