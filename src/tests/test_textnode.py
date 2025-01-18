@@ -1,7 +1,8 @@
 import unittest
 
-from src.leafnode import LeafNode
-from src.textnode import TextNode, TextType
+from src.LeafNode import LeafNode
+from src.TextNode import TextNode
+from src.TextType import TextType
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):

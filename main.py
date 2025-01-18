@@ -1,5 +1,5 @@
-from src.textnode import TextType
-from src.textnode import TextNode
+from src.TextType import TextType
+from src.TextNode import TextNode
 from src.inline_markdown import markdown_to_blocks
 
 def main():
