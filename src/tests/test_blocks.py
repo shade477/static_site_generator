@@ -1,5 +1,6 @@
 import unittest
 from src.blocks_markdown import markdown_to_blocks, block_to_block_type
+from src.BlockType import BlockType
 
 class TestBlocks(unittest.TestCase):
     def test_mark_to_block(self):
@@ -30,7 +31,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 
     def test_block_head(self):
         text = '## Heading 2'
-        expected = 'h2'
+        expected = BlockType.HEADING2
 
         result = block_to_block_type(text)
 
@@ -38,7 +39,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 
     def test_block_head2(self):
         text = '####### Heading 6'
-        expected = 'h6'
+        expected = BlockType.HEADING6
         result = block_to_block_type(text)
 
         self.assertEqual(result, expected)
@@ -48,7 +49,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         Code Block
         hello
         ```"""
-        expected = 'code'
+        expected = BlockType.CODE
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
         
@@ -64,7 +65,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
     def test_block_quote(self):
         text = """> Hesitation is defeat
 > If the heroes run away, who's left to help?"""
-        expected = 'quote'
+        expected = BlockType.QUOTE
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
         
@@ -78,14 +79,14 @@ If the heroes run away, who's left to help?"""
     def test_block_unordered1(self):
         text = """- item 1
 - item 2"""
-        expected = 'unordered'
+        expected = BlockType.UNORDERED
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
 
     def test_block_unordered2(self):
         text = """* item 1
 * item 2"""
-        expected = 'unordered'
+        expected = BlockType.UNORDERED
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
 
@@ -111,7 +112,7 @@ item 3"""
         text = """1. item 1
 2. item 2
 3. item"""
-        expected = 'ordered'
+        expected = BlockType.ORDERED
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
     
@@ -134,6 +135,6 @@ item 3"""
     def test_block_paragraph(self):
         text = """Just a normal paragraph with multiple lines
         lol lolol"""
-        expected= 'paragraph'
+        expected = BlockType.PARAGRAPH
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
