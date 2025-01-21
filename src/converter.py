@@ -88,7 +88,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 child = LeafNode(BlockType.HEADING5.value, block[6:])
 
             case BlockType.HEADING6:
-                child = LeafNode(BlockType.HEADING6.value, block[7:])
+                child = LeafNode(BlockType.HEADING6.value, block[7:].lstrip('#').lstrip())
 
             case BlockType.CODE:
                 child = LeafNode(BlockType.CODE.value, block[3:-3])
