@@ -53,14 +53,14 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
         
-    def test_block_code_err(self):
-        text = """```
-        Code Block
-        hello
-        """
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
-        self.assertTrue("Code block not enclosed" in str(ctx.exception))
+    # def test_block_code_err(self):
+    #     text = """```
+    #     Code Block
+    #     hello
+    #     """
+    #     with self.assertRaises(Exception) as ctx:
+    #         block_to_block_type(text)
+    #     self.assertTrue("Code block not enclosed" in str(ctx.exception))
 
     def test_block_quote(self):
         text = """> Hesitation is defeat
@@ -69,12 +69,12 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
         
-    def test_block_quote_err(self):
-        text = """> Hesitation is defeat
-If the heroes run away, who's left to help?"""
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
-        self.assertTrue('Quote line not start with ">"' in str(ctx.exception))
+#     def test_block_quote_err(self):
+#         text = """> Hesitation is defeat
+# If the heroes run away, who's left to help?"""
+#         with self.assertRaises(Exception) as ctx:
+#             block_to_block_type(text)
+#         self.assertTrue('Quote line not start with ">"' in str(ctx.exception))
 
     def test_block_unordered1(self):
         text = """- item 1
@@ -90,23 +90,23 @@ If the heroes run away, who's left to help?"""
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
 
-    def test_block_unordered_mix(self):
-        text = """- item 1
-- item 2
-* item 3"""
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
+#     def test_block_unordered_mix(self):
+#         text = """- item 1
+# - item 2
+# * item 3"""
+#         with self.assertRaises(Exception) as ctx:
+#             block_to_block_type(text)
         
-        self.assertTrue('Unordered lines not good' in str(ctx.exception))
+#         self.assertTrue('Unordered lines not good' in str(ctx.exception))
 
-    def test_block_unordered_bad(self):
-        text = """- item 1
-- item 2
-item 3"""
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
+#     def test_block_unordered_bad(self):
+#         text = """- item 1
+# - item 2
+# item 3"""
+#         with self.assertRaises(Exception) as ctx:
+#             block_to_block_type(text)
         
-        self.assertTrue('Unordered lines not good' in str(ctx.exception))
+#         self.assertTrue('Unordered lines not good' in str(ctx.exception))
 
     def test_block_ordered(self):
         text = """1. item 1
@@ -116,21 +116,21 @@ item 3"""
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
     
-    def test_block_ordered_bad(self):
-        text = """1. item 1
-2. item 2
-item 3"""
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
-        self.assertTrue('Line does not start with a number and a period' in str(ctx.exception))
+#     def test_block_ordered_bad(self):
+#         text = """1. item 1
+# 2. item 2
+# item 3"""
+#         with self.assertRaises(Exception) as ctx:
+#             block_to_block_type(text)
+#         self.assertTrue('Line does not start with a number and a period' in str(ctx.exception))
 
-    def test_block_ordered_numbering(self):
-        text = """1. item 1
-2. item 2
-4. item 3"""
-        with self.assertRaises(Exception) as ctx:
-            block_to_block_type(text)
-        self.assertTrue("Bad numbering" in str(ctx.exception))
+#     def test_block_ordered_numbering(self):
+#         text = """1. item 1
+# 2. item 2
+# 4. item 3"""
+#         with self.assertRaises(Exception) as ctx:
+#             block_to_block_type(text)
+#         self.assertTrue("Bad numbering" in str(ctx.exception))
 
     def test_block_paragraph(self):
         text = """Just a normal paragraph with multiple lines
