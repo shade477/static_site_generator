@@ -1,7 +1,54 @@
 from src.ParentNode import ParentNode
 from src.LeafNode import LeafNode
-from BlockType import BlockType
-import blocks_markdown as bm
+from src.BlockType import BlockType
+import src.blocks_markdown as bm
+from src.TextNode import TextNode
+from src.TextType import TextType
+from src.inline_markdown import text_to_textnodes
+
+def html_image(node) -> LeafNode:
+    """
+    Takes in a image TextNode and converts it to a LeafNode
+    @params:
+        - node: TextNode of TextType.IMAGE
+    return: LeafNode
+    """
+    leaf = LeafNode('img', node.text, {'src': node.url})
+    return leaf
+
+def html_link(node) -> LeafNode:
+    """
+    Takes in a Link TextNode and converts it to a LeafNode
+    @params:
+        - node: TextNode of TextType.LINK
+    return: LeafNode
+    """
+    leaf = LeafNode('a', node.text, {'href': node.text_type})
+    return leaf
+
+def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
+    """
+    Takes in a list of TextNodes and converts them to LeafNodes
+    @params: 
+        - nodes -> list[TextNode]
+    @return: list[LeafNode]
+    """
+    conversion = {
+        TextType.BOLD: 'b',
+        TextType.ITALIC: 'i',
+        TextType.CODE: 'code',
+        TextType.TEXT: 'p',
+        TextType.IMAGE: lambda image: html_image(node),
+        TextType.LINK: lambda link: html_link(node)
+    }
+    res = []
+    for node in nodes:
+        if node.text_type in [TextType.IMAGE, TextType.LINK]:
+            leaf = conversion[node.text_type](node)
+        else:
+            leaf = LeafNode(conversion[node.text_type], node.text)
+        res.append(leaf)
+    return res
 
 def markdown_to_html_node(markdown):
     blocks = bm.markdown_to_blocks(markdown)
@@ -10,7 +57,9 @@ def markdown_to_html_node(markdown):
         type = bm.block_to_block_type(block)
         match(type):
             case BlockType.PARAGRAPH:
-                child = LeafNode(BlockType.PARAGRAPH.value , block)
+                # Use inline markdown functions to classify inline nodes within the paragraph
+                nodes = text_to_textnodes(block)
+
 
             case BlockType.HEADING1:
                 child = LeafNode(BlockType.HEADING1.value, block[2:])
