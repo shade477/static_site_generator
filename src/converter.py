@@ -50,7 +50,13 @@ def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
         res.append(leaf)
     return res
 
-def markdown_to_html_node(markdown):
+def markdown_to_html_node(markdown: str) -> ParentNode:
+    """
+    Takes input markdown and splits it to HTMLNodes
+    @param:
+        - markdown -> str
+    @return: ParentNode
+    """
     blocks = bm.markdown_to_blocks(markdown)
     res = []
     for block in blocks:
