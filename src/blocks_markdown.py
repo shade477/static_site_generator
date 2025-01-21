@@ -41,13 +41,15 @@ def block_to_block_type(text):
     elif text[:3] == '```':
         if text[-3:] == '```':
             return BlockType.CODE
-        raise Exception('Code block not enclosed')
+        # raise Exception('Code block not enclosed')
+        return BlockType.PARAGRAPH
 
     elif text[0] == '>':
         parts = text.split('\n')
         for part in parts:
             if part[0] != '>':
-                raise Exception('Quote line not start with ">"')
+                # raise Exception('Quote line not start with ">"')
+                return BlockType.PARAGRAPH
         return BlockType.QUOTE
 
     elif text[0] == '-' or text[0] == '*':
@@ -55,7 +57,8 @@ def block_to_block_type(text):
         parts = text.split('\n')
         for part in parts:
             if part[0] != ch:
-                raise Exception('Unordered lines not good')
+                # raise Exception('Unordered lines not good')
+                return BlockType.PARAGRAPH
         return BlockType.UNORDERED
 
     elif re.match(r'^([0-9]+)\. .*', text):
@@ -63,16 +66,19 @@ def block_to_block_type(text):
         match = re.search(r'^([0-9]+)\.', parts[0])  # Check the first line
 
         if not match:
-            raise Exception("Bad Block: The first line does not start with a number and a period.")
+            # raise Exception("Bad Block: The first line does not start with a number and a period.")
+            return BlockType.PARAGRAPH
         expected = int(match.group(1))  # Extract the first number
 
         for part in parts:
             match = re.match(r'^([0-9]+)\. ', part)
             if not match:
-                raise Exception("Bad Block: Line does not start with a number and a period.")
+                # raise Exception("Bad Block: Line does not start with a number and a period.")
+                return BlockType.PARAGRAPH
             number = int(match.group(1))
             if number != expected:
-                raise Exception(f"Bad numbering: Expected {expected}, but got {number}.")
+                # raise Exception(f"Bad numbering: Expected {expected}, but got {number}.")
+                return BlockType.PARAGRAPH
             expected += 1  # Increment expected for the next line
         return BlockType.ORDERED
     
