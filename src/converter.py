@@ -60,6 +60,11 @@ def markdown_to_html_node(markdown):
                 # Use inline markdown functions to classify inline nodes within the paragraph
                 nodes = text_to_textnodes(block)
 
+                # if size of nodes is 1 then it cannot be made to ParentNode
+                if len(nodes) == 1:
+                    child = nodes[0]
+                else:
+                    child = ParentNode('div', nodes)
 
             case BlockType.HEADING1:
                 child = LeafNode(BlockType.HEADING1.value, block[2:])
@@ -87,19 +92,19 @@ def markdown_to_html_node(markdown):
 
             case BlockType.UNORDERED:
                 lines = block.split('\n')
-                list = []
+                items = []
                 for line in lines:
                     node = LeafNode('li', line[2:])
-                    list.append(node)
-                child = ParentNode('ul', list)
+                    items.append(node)
+                child = ParentNode('ul', items)
 
             case BlockType.ORDERED:
                 lines = block.split('\n')
-                list = []
+                items = []
                 for line in lines:
                     node = LeafNode('li', line[3:])
-                    list.append(node)
-                child = ParentNode('ol', list)
+                    items.append(node)
+                child = ParentNode('ol', items)
 
         res.append(child)
     
