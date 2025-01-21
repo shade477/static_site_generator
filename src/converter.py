@@ -38,8 +38,8 @@ def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
         TextType.ITALIC: 'i',
         TextType.CODE: 'code',
         TextType.TEXT: 'p',
-        TextType.IMAGE: lambda image: html_image(node),
-        TextType.LINK: lambda link: html_link(node)
+        TextType.IMAGE: lambda image: html_image(image),
+        TextType.LINK: lambda link: html_link(link)
     }
     res = []
     for node in nodes:
