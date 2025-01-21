@@ -23,7 +23,7 @@ def html_link(node) -> LeafNode:
         - node: TextNode of TextType.LINK
     return: LeafNode
     """
-    leaf = LeafNode('a', node.text, {'href': node.text_type})
+    leaf = LeafNode('a', node.text, {'href': node.url})
     return leaf
 
 def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
@@ -65,7 +65,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             case BlockType.PARAGRAPH:
                 # Use inline markdown functions to classify inline nodes within the paragraph
                 nodes = text_to_textnodes(block)
-
+                nodes = textNode_to_children(nodes)
                 # if size of nodes is 1 then it cannot be made to ParentNode
                 if len(nodes) == 1:
                     child = nodes[0]
@@ -91,10 +91,11 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 child = LeafNode(BlockType.HEADING6.value, block[7:])
 
             case BlockType.CODE:
-                child = LeafNode(BlockType.CODE.value, block[3:])
+                child = LeafNode(BlockType.CODE.value, block[3:-3])
 
             case BlockType.QUOTE:
-                child = LeafNode(BlockType.QUOTE.value, block[2:])
+                text = '\n'.join(line[2:] for line in block.split('\n'))
+                child = LeafNode(BlockType.QUOTE.value, text)
 
             case BlockType.UNORDERED:
                 lines = block.split('\n')
