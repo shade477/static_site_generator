@@ -1,16 +1,57 @@
-from src.TextType import TextType
-from src.TextNode import TextNode
-from src.inline_markdown import markdown_to_blocks
+import os
+import shutil
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+def clean_directory(dst: str):
+    """
+    Deletes all files, symlinks, and subdirectories in the given directory.
+    
+    Args:
+        dst (str): Path to the directory to clean.
+
+    Raises:
+        Exception: If a file or directory cannot be deleted.
+    """
+    if os.path.exists(dst) and os.path.isdir(dst):
+        for entry in os.scandir(dst):
+            try:
+                if entry.is_file() or entry.is_symlink():
+                    os.unlink(entry.path)
+                    logging.info(f"Deleted file or symlink: {entry.path}")
+                elif entry.is_dir():
+                    shutil.rmtree(entry.path)
+                    logging.info(f"Deleted directory: {entry.path}")
+            except Exception as e:
+                logging.error(f"Failed to delete {entry.path}. Reason: {e}")
+    else:
+        logging.warning(f"The path {dst} does not exist or is not a directory.")
+
+def copy_dir(src, dst, src_path):
+    if os.path.isfile(src):
+        shutil.copy(src, dst)
+    else:
+        rel_path = os.path.relpath(src, src_path)
+        dst_path = os.path.join(dst, rel_path)
+        if not os.path.exists(dst_path):
+            os.mkdir(dst_path)
+        items = os.listdir(src)
+        for item in items:
+            rel_src = os.path.join(src_path, rel_path, item)
+            src_path = os.path.dirname(rel_src)
+            copy_dir(rel_src, dst_path, src_path)
+
+def copy_static(src, dst):
+    clean_directory(dst)
+    items = os.listdir(src)
+    for item in items:
+        copy_dir(os.path.join(src, item), dst, src)
 
 def main():
-    text = """# This is a heading
-
-This is a paragraph of text. It has some **bold** and *italic* words inside of it.
-
-* This is the first list item in a list block
-* This is a list item
-* This is another list item"""
-    print(markdown_to_blocks(text))
+    src = './static'
+    dst = './public'
+    copy_static(src, dst)
 
 if __name__ == '__main__':
     main()
