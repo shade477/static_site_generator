@@ -52,14 +52,12 @@ def block_to_block_type(text):
                 return BlockType.PARAGRAPH
         return BlockType.QUOTE
 
-    elif text[0] == '-' or text[0] == '*':
-        ch = text[0]
-        parts = text.split('\n')
-        for part in parts:
-            if part[0] != ch:
-                # raise Exception('Unordered lines not good')
-                return BlockType.PARAGRAPH
-        return BlockType.UNORDERED
+    elif text[0] in {'-', '*'}:
+        unordered_list_pattern = re.compile(rf"^{re.escape(text[0])} .*", re.MULTILINE)
+        if all(unordered_list_pattern.match(line) for line in text.split('\n')):
+            return BlockType.UNORDERED
+        else:
+            return BlockType.PARAGRAPH
 
     elif re.match(r'^([0-9]+)\. .*', text):
         parts = text.split('\n')
