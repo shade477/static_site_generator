@@ -90,6 +90,18 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         result = block_to_block_type(text)
         self.assertEqual(result, expected)
 
+    def test_block_italic(self):
+        text = "*Hello* only italics"
+        expected = BlockType.PARAGRAPH
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+
+    def test_block_bold(self):
+        text = "**Starts with** bold"
+        expected = BlockType.PARAGRAPH
+        result = block_to_block_type(text)
+        self.assertEqual(result, expected)
+
 #     def test_block_unordered_mix(self):
 #         text = """- item 1
 # - item 2
