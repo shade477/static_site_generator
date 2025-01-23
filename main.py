@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+from src.generate import generate_page
 
 logging.basicConfig(level=logging.INFO)
 
@@ -31,11 +32,13 @@ def clean_directory(dst: str):
 def copy_dir(src, dst, src_path):
     if os.path.isfile(src):
         shutil.copy(src, dst)
+        logging.info(f"Copying {src} to {dst}")
     else:
         rel_path = os.path.relpath(src, src_path)
         dst_path = os.path.join(dst, rel_path)
         if not os.path.exists(dst_path):
             os.mkdir(dst_path)
+            logging.info(f"Created directory: {dst_path}")
         items = os.listdir(src)
         for item in items:
             rel_src = os.path.join(src_path, rel_path, item)
@@ -49,9 +52,11 @@ def copy_static(src, dst):
         copy_dir(os.path.join(src, item), dst, src)
 
 def main():
-    src = './static'
-    dst = './public'
-    copy_static(src, dst)
+    # src = './static'
+    # dst = './public'
+    # copy_static(src, dst)
+    generate_page('./content/index.md', './template.html', './public/index.html')
+    
 
 if __name__ == '__main__':
     main()
