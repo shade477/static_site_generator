@@ -9,6 +9,9 @@ def markdown_to_blocks(text):
 
     @return
     - List[str]
+
+    issues:
+        - '\n' followed by a \\s and '\n' will result in the block not being detected
     """
 
     blocks = text.split('\n\n')

@@ -64,9 +64,9 @@ def process_paragraph(markdown):
     nodes = textNode_to_children(nodes)
     # if size of nodes is 1 then it cannot be made to ParentNode
     if len(nodes) == 1:
-        child = LeafNode('', nodes[0])
+        child = LeafNode('p', nodes[0])
     else:
-        child = ParentNode('div', nodes)
+        child = ParentNode('p', nodes)
 
     return child
 

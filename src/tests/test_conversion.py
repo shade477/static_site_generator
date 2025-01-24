@@ -5,6 +5,54 @@ from src.converter import markdown_to_html_node
 
 class TestConversion(unittest.TestCase):
 
+    def test_markdown_paragraph(self):
+        text = """Hello this is a normal paragraph with **Bold** text"""
+        expected = ParentNode('div', [
+            ParentNode('p', [
+                LeafNode('p', 'Hello this is a normal paragraph with '),
+                LeafNode('b', 'Bold'),
+                LeafNode('p', ' text')
+            ])
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+    
+    def test_markdown_head(self):
+        text = """# h1 Heading
+
+## h2 Heading"""
+        expected = ParentNode('div', [
+            LeafNode('h1', 'h1 Heading'),
+            LeafNode('h2', 'h2 Heading')
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
+    def test_markdown_quote(self):
+        text = """> quote 1 text
+> quote 2 text"""
+        expected = ParentNode('div', [
+            LeafNode('quote', """quote 1 text
+quote 2 text"""
+                     )
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
+    def test_markdown_code(self):
+        text = """```
+def Hello():
+    print("Hello")
+```"""
+        expected = ParentNode('div', [
+            LeafNode('code', """
+def Hello():
+    print("Hello")
+""")
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
     def test_normal_markdown(self):
         text = """
 # This is h1 heading
