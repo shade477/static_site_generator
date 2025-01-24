@@ -50,6 +50,27 @@ def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
         res.append(leaf)
     return res
 
+def process_paragraph(markdown):
+    """
+    Takes in markdown and converts it to TextNodes and returns HTMLNode
+    
+    @params:
+        - markdown -> str: Normal markdown text
+
+    return: LeafNode or ParentNode
+    """
+    # Use inline markdown functions to classify inline nodes within the paragraph
+    nodes = text_to_textnodes(markdown)
+    nodes = textNode_to_children(nodes)
+    # if size of nodes is 1 then it cannot be made to ParentNode
+    if len(nodes) == 1:
+        child = LeafNode('', nodes[0])
+    else:
+        child = ParentNode('div', nodes)
+
+    return child
+
+
 def markdown_to_html_node(markdown: str) -> ParentNode:
     """
     Takes input markdown and splits it to HTMLNodes
@@ -63,14 +84,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         type = bm.block_to_block_type(block)
         match(type):
             case BlockType.PARAGRAPH:
-                # Use inline markdown functions to classify inline nodes within the paragraph
-                nodes = text_to_textnodes(block)
-                nodes = textNode_to_children(nodes)
-                # if size of nodes is 1 then it cannot be made to ParentNode
-                if len(nodes) == 1:
-                    child = nodes[0]
-                else:
-                    child = ParentNode('div', nodes)
+                child = process_paragraph(block).to_html()
 
             case BlockType.HEADING1:
                 child = LeafNode(BlockType.HEADING1.value, block[2:])
@@ -101,7 +115,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 lines = block.split('\n')
                 items = []
                 for line in lines:
-                    node = LeafNode('li', line[2:])
+                    node = LeafNode('li', process_paragraph(line[2:]).to_html())
                     items.append(node)
                 child = ParentNode('ul', items)
 
@@ -109,7 +123,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 lines = block.split('\n')
                 items = []
                 for line in lines:
-                    node = LeafNode('li', line[3:])
+                    node = LeafNode('li', process_paragraph(line[3:]).to_html())
                     items.append(node)
                 child = ParentNode('ol', items)
 

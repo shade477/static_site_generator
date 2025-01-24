@@ -52,9 +52,9 @@ def copy_static(src, dst):
         copy_dir(os.path.join(src, item), dst, src)
 
 def main():
-    # src = './static'
-    # dst = './public'
-    # copy_static(src, dst)
+    src = './static'
+    dst = './public'
+    copy_static(src, dst)
     generate_page('./content/index.md', './template.html', './public/index.html')
     
 
