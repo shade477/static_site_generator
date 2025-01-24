@@ -53,6 +53,60 @@ def Hello():
         result = markdown_to_html_node(text)
         self.assertEqual(result, expected)
 
+    def test_markdown_unordered(self):
+        text = """- item 1
+- item 2"""
+        expected = ParentNode('div', [
+            ParentNode('ul', [
+                LeafNode('li', 'item 1'),
+                LeafNode('li', 'item 2')
+            ])
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
+    def test_markdown_unordered_nested(self):
+        text = """- item 1
+- item 2 with **Bold Text**"""
+        expected = ParentNode('div', [
+            ParentNode('ul', [
+                LeafNode('li', 'item 1'),
+                ParentNode('li', [
+                    LeafNode('', 'item 2 with '),
+                    LeafNode('b', 'Bold Text')
+                ])
+            ])
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
+    def test_markdown_ordered(self):
+        text = """1. item 1
+2. item 2"""
+        expected = ParentNode('div', [
+            ParentNode('ol', [
+                LeafNode('li', 'item 1'),
+                LeafNode('li', 'item 2')
+            ])
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
+    def test_markdown_ordered_nested(self):
+        text = """1. item 1
+2. item 2 with *markdown text*"""
+        expected = ParentNode('div', [
+            ParentNode('ol', [
+                LeafNode('li', 'item 1'),
+                ParentNode('li', [
+                    LeafNode('', 'item 2 with '),
+                    LeafNode('i', 'markdown text')
+                ])
+            ])
+        ])
+        result = markdown_to_html_node(text)
+        self.assertEqual(result, expected)
+
     def test_normal_markdown(self):
         text = """
 # This is h1 heading
