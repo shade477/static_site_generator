@@ -84,7 +84,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         type = bm.block_to_block_type(block)
         match(type):
             case BlockType.PARAGRAPH:
-                child = process_paragraph(block).to_html()
+                child = process_paragraph(block)
 
             case BlockType.HEADING1:
                 child = LeafNode(BlockType.HEADING1.value, block[2:])
