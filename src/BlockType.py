@@ -8,7 +8,7 @@ class BlockType(Enum):
     HEADING5 = 'h5'
     HEADING6 = 'h6'
     CODE = 'code'
-    QUOTE = 'quote'
+    QUOTE = 'blockquote'
     UNORDERED = 'unordered'
     ORDERED = 'ordered'
     PARAGRAPH = 'paragraph'

@@ -50,14 +50,15 @@ def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
         res.append(leaf)
     return res
 
-def process_paragraph(markdown):
+def process_paragraph(markdown, tag):
     """
     Takes in markdown and converts it to TextNodes and returns HTMLNode
     
     @params:
         - markdown -> str: Normal markdown text
+        - tag -> str: HTML tag
 
-    return: LeafNode or ParentNode
+    return: ParentNode
     """
     # Use inline markdown functions to classify inline nodes within the paragraph
     nodes = text_to_textnodes(markdown)
@@ -68,8 +69,9 @@ def process_paragraph(markdown):
     # else:
     #     child = ParentNode('p', nodes)
     
-    child = ParentNode('p', nodes)
+    child = ParentNode(tag, nodes)
     return child
+    # return nodes
 
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
@@ -85,7 +87,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         type = bm.block_to_block_type(block)
         match(type):
             case BlockType.PARAGRAPH:
-                child = process_paragraph(block)
+                child = process_paragraph(block, 'p')
 
             case BlockType.HEADING1:
                 child = LeafNode(BlockType.HEADING1.value, block[2:])
@@ -116,7 +118,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 lines = block.split('\n')
                 items = []
                 for line in lines:
-                    node = LeafNode('li', process_paragraph(line[2:]).to_html())
+                    node = process_paragraph(line[2:], 'li')
                     items.append(node)
                 child = ParentNode('ul', items)
 
@@ -124,7 +126,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 lines = block.split('\n')
                 items = []
                 for line in lines:
-                    node = LeafNode('li', process_paragraph(line[3:]).to_html())
+                    node = process_paragraph(line[3:], 'li')
                     items.append(node)
                 child = ParentNode('ol', items)
 
