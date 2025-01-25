@@ -37,7 +37,7 @@ def textNode_to_children(nodes: list[TextNode]) -> list[LeafNode]:
         TextType.BOLD: 'b',
         TextType.ITALIC: 'i',
         TextType.CODE: 'code',
-        TextType.TEXT: 'p',
+        TextType.TEXT: '',
         TextType.IMAGE: lambda image: html_image(image),
         TextType.LINK: lambda link: html_link(link)
     }
@@ -67,6 +67,7 @@ def process_paragraph(markdown):
     #     child = LeafNode('p', nodes[0])
     # else:
     #     child = ParentNode('p', nodes)
+    
     child = ParentNode('p', nodes)
     return child
 
