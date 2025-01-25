@@ -38,7 +38,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     for file in files:
         path = os.path.join(dir_path_content, file)
         if os.path.isfile(path) and re.search(r'\.md$', file):
-            generate_page(path, template_path, os.path.join(dest_dir_path, file))
+            generate_page(path, template_path, os.path.join(dest_dir_path, re.sub(r"\.[^.]+$", ".html", file)))
         
         else:
             dst_path = os.path.join(dest_dir_path, file)

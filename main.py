@@ -2,7 +2,6 @@ import os
 import shutil
 import logging
 from src.generate import generate_pages_recursive
-from src.converter import markdown_to_html_node
 
 logging.basicConfig(level=logging.INFO)
 
