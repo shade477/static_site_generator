@@ -1,4 +1,5 @@
 import re
+import os
 import logging
 
 from src.converter import markdown_to_html_node
@@ -31,3 +32,15 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(dest_path, 'w') as file:
         file.write(result)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    files = os.listdir(dir_path_content)
+    for file in files:
+        path = os.path.join(dir_path_content, file)
+        if os.path.isfile(path) and re.search(r'\.md$', file):
+            generate_page(path, template_path, os.path.join(dest_dir_path, file))
+        
+        else:
+            dst_path = os.path.join(dest_dir_path, file)
+            os.mkdir(dst_path)
+            generate_pages_recursive(path, template_path, dst_path)

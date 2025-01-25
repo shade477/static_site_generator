@@ -1,7 +1,7 @@
 import os
 import shutil
 import logging
-from src.generate import generate_page
+from src.generate import generate_pages_recursive
 from src.converter import markdown_to_html_node
 
 logging.basicConfig(level=logging.INFO)
@@ -56,9 +56,7 @@ def main():
     src = './static'
     dst = './public'
     copy_static(src, dst)
-    generate_page('./content/index.md', './template.html', './public/index.html')
-    # text = "Hello this is a normal paragraph with **Bold** text"
-    # print(markdown_to_html_node(text))
+    generate_pages_recursive('./content', './template.html', './public')
     
 
 if __name__ == '__main__':
