@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 from src.generate import generate_page
+from src.converter import markdown_to_html_node
 
 logging.basicConfig(level=logging.INFO)
 
@@ -56,6 +57,8 @@ def main():
     dst = './public'
     copy_static(src, dst)
     generate_page('./content/index.md', './template.html', './public/index.html')
+    # text = "Hello this is a normal paragraph with **Bold** text"
+    # print(markdown_to_html_node(text))
     
 
 if __name__ == '__main__':
