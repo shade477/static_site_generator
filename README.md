@@ -1,5 +1,4 @@
 # Static Site Generator
----
 
 A CLI tool that converts markdown files and converts them to HTML content and hosts it using a python server.
 
